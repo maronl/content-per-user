@@ -24,6 +24,39 @@ class Content_Per_User_Manager_Admin {
         }
     }
 
+    function install_db_structure() {
+
+        global $wpdb;
+
+        $table_name = $wpdb->prefix . 'content_per_user';
+
+        $charset_collate = '';
+
+        if ( ! empty( $wpdb->charset ) ) {
+            $charset_collate = "DEFAULT CHARACTER SET {$wpdb->charset}";
+        }
+
+        if ( ! empty( $wpdb->collate ) ) {
+            $charset_collate .= " COLLATE {$wpdb->collate}";
+        }
+
+        $sql = "CREATE TABLE $table_name (
+          id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+          post_id bigint(20) unsigned NOT NULL,
+          user_id bigint(20) unsigned NOT NULL,
+          PRIMARY KEY (id),
+          KEY cpu_post_id (post_id),
+          KEY cpu_user_id (user_id)
+	    ) $charset_collate;";
+
+        require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+
+        dbDelta( $sql );
+
+        add_option( 'content_per_user_db_version', $this->version );
+
+    }
+
     public function register_scripts() {
         wp_register_script( 'content-per-user-admin-js', plugins_url( $this->js_configuration['js_path'] . 'content-per-user-admin.' . $this->js_configuration['js_extension'], __FILE__ ), array('jquery-ui-autocomplete') );
     }

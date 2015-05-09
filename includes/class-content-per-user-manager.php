@@ -153,6 +153,9 @@ class Content_Per_User_Manager {
     }
 
     private function define_register_activation_hook() {
+        $data_model = Content_Per_User_Model::getInstance();
+        $admin = new Content_Per_User_Manager_Admin( $this->version, $this->options, $data_model);
+        register_activation_hook( dirname( dirname( __FILE__ ) ) . '\content-per-user.php' , array( $admin, 'install_db_structure' ) );
 
     }
 
