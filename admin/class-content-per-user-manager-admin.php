@@ -76,7 +76,35 @@ class Content_Per_User_Manager_Admin {
         }
 
     }
-    
+
+    function user_profile_content_per_user_section(){
+
+        ?>
+
+        <h3><?php _e( 'Content per User', 'content-per-user' )?></h3>
+
+        <div class="message-content-per-user"></div>
+
+        <table class="form-table">
+            <tbody>
+            <tr class="form-field form-required">
+                <td scope="row"><label for="suggest-content-per-user"><?php _e('Select content using title or page slug','content-per-user'); ?></label>
+                    <input type="text" value="" class="wp-suggest-user ui-autocomplete-input" id="suggest-content-per-user" name="suggest-content-per-user" autocomplete="off">
+                    <input type="button" value="<?php _e('Add Content','content-per-user'); ?>" class="button button-primary" id="add-content-per-user" name="add-content-per-user">
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <div class="tagchecklist">
+            <span><a class="ntdelbutton" id="post_tag-check-num-0">X</a>&nbsp;prova</span>
+            <span><a class="ntdelbutton" id="post_tag-check-num-1">X</a>&nbsp;pippo</span>
+        </div>
+
+
+    <?php
+    }
+
     function load_textdomain() {
         load_plugin_textdomain( 'content-per-user', false, dirname( dirname( plugin_basename( __FILE__ ) ) )  . '/langs' );
     }
