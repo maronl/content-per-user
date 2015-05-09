@@ -24,6 +24,16 @@ class Content_Per_User_Manager_Admin {
         }
     }
 
+    public function register_scripts() {
+        wp_register_script( 'content-per-user-admin-js', plugins_url( $this->js_configuration['js_path'] . 'content-per-user-admin.' . $this->js_configuration['js_extension'], __FILE__ ), array('jquery-ui-autocomplete') );
+    }
+
+    public function enqueue_scripts($hook) {
+        if( $hook == 'user-edit.php' ){
+            wp_enqueue_script('content-per-user-admin-js');
+        }
+    }
+
     function add_meta_box_content_per_user() {
 
         $enabled_post_type =  $this->options['content-per-user-post-type'];
@@ -84,6 +94,8 @@ class Content_Per_User_Manager_Admin {
         <h3><?php _e( 'Content per User', 'content-per-user' )?></h3>
 
         <div class="message-content-per-user"></div>
+        <input type="hidden" id="content-per-user-post-id" value="" autocomplete="off">
+        <input type="hidden" id="content-per-user-post-title" value="" autocomplete="off">
 
         <table class="form-table">
             <tbody>
@@ -96,13 +108,27 @@ class Content_Per_User_Manager_Admin {
             </tbody>
         </table>
 
-        <div class="tagchecklist">
-            <span><a class="ntdelbutton" id="post_tag-check-num-0">X</a>&nbsp;prova</span>
-            <span><a class="ntdelbutton" id="post_tag-check-num-1">X</a>&nbsp;pippo</span>
+        <div class="tagchecklist contentperuserchecklist">
+            <span><a class="content-per-user-delbutton" id="post_tag-check-num-0">X</a>&nbsp;prova</span>
+            <span><a class="content-per-user-delbutton" id="post_tag-check-num-1">X</a>&nbsp;pippo</span>
         </div>
 
 
     <?php
+    }
+
+    function suggest_content_per_user() {
+        $res = array();
+        $res[] = array(
+            'id' => 123,
+            'value' => 'pinco pallino'
+        );
+        $res[] = array(
+            'id' => 145,
+            'value' => 'gian burrasca'
+        );
+        echo json_encode($res);
+        die;
     }
 
     function load_textdomain() {

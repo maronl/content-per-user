@@ -122,6 +122,8 @@ class Content_Per_User_Manager {
         $admin = new Content_Per_User_Manager_Admin( $this->version, $this->options, $data_model);
         $admin_options = new Content_Per_User_Manager_Options( $this->version, $this->options );
 
+        $this->loader->add_action( 'admin_init', $admin, 'register_scripts' );
+        $this->loader->add_action( 'admin_enqueue_scripts', $admin, 'enqueue_scripts' );
         $this->loader->add_action( 'admin_init', $admin_options, 'register_scripts' );
         $this->loader->add_action( 'admin_enqueue_scripts', $admin_options, 'enqueue_scripts' );
         $this->loader->add_action( 'admin_menu', $admin_options, 'add_plugin_options_page' );
@@ -130,6 +132,8 @@ class Content_Per_User_Manager {
         $this->loader->add_action( 'add_meta_boxes',$admin , 'add_meta_box_content_per_user' );
         $this->loader->add_action( 'save_post', $admin, 'save_meta_box_content_per_user' );
         $this->loader->add_action( 'edit_user_profile', $admin, 'user_profile_content_per_user_section' );
+        $this->loader->add_action( 'wp_ajax_suggest_content_per_user', $admin, 'suggest_content_per_user' );
+
 
     }
 
