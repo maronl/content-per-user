@@ -149,6 +149,8 @@ class Content_Per_User_Manager {
         $data_model = Content_Per_User_Model::getInstance();
         $public = new Content_Per_User_Manager_Public( $this->version, $this->options, $data_model);
 
+        $this->loader->add_filter( 'the_content', $public, 'the_content_filter', 99 );
+
         Content_Per_User_Theme_Functions::define_theme_functions();
 
     }

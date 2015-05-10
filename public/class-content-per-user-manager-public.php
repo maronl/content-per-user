@@ -24,4 +24,24 @@ class Content_Per_User_Manager_Public {
         }
     }
 
+    function the_content_filter( $content ) {
+        if ( is_single() && ! $this->data_model->user_can_access_post( get_current_user_id(), get_the_ID() )){
+            $check_preview = strpos( $content, '<!--om-preview-->' );
+            if( $check_preview === false ) {
+                $content = '';
+            }else{
+                $content = substr($content, 0, $check_preview);
+            }
+            ob_start();
+            if( file_exists( get_template_directory() . '/cpu-access-forbidden.php' ) ){
+                include get_template_directory() . '/cpu-access-forbidden.php';
+            }else {
+                include 'partials/access-forbidden.php';
+            }
+            $out = ob_get_contents();
+            ob_end_clean();
+            $content .=  $out;
+        }
+        return $content;
+    }
 }

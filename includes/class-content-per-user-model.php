@@ -98,4 +98,37 @@ class Content_Per_User_Model {
         return $delete;
 
     }
+
+    function user_can_access_post( $user_id = null, $post_id = null ){
+        global $wpdb;
+        if( is_null( $user_id ) || is_null( $post_id ) ) {
+            return false;
+        }
+        // administrator and editor can access everything
+        if(current_user_can('edit_others_posts') || current_user_can('manage_options')){
+            return true;
+        }
+
+        $check = $wpdb->get_row(
+            $wpdb->prepare(
+                "
+                 SELECT * FROM " . $wpdb->base_prefix . "content_per_user
+                 WHERE post_id = %d
+                 AND user_id = %d
+                ",
+                $post_id, $user_id
+            ), ARRAY_A
+        );
+
+        if( is_null( $check ) ){
+            if(has_filter('content_per_user_user_can_access_post'))
+                $check = apply_filters( 'content_per_user_user_can_access_post', $user_id, $post_id );
+            if( is_null( $check ) ){
+                return false;
+            }
+        }
+
+        return $check;
+    }
+
 } 
