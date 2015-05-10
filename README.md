@@ -3,6 +3,8 @@ WordPress plugin to allow adminstrators define if a post, page or custom post is
 
 
 ## done
+10/05/2015
+
 09/05/2015
 aggiungere sezione nel profilo utente per aggiungere i contenuti di un utente
 implemetare template aggiunta contenuti ad un utente
@@ -18,6 +20,9 @@ aggiunto metabox content per user nella pagina di editing del post
 
 ## to be done
 implemetare gestione dati reali per i contenuti di uno specifico utente (database schema, ajax return values)
+ - ricerca reale json con ajax dei post da suggerire
+ - salvataggio associazione user_id post_id qando fccio aggiungi
+ - rimozione associazione user_id post_id qando fccio aggiungi
 implementare check prima di renderizzare il contenuto di un post per vedere se l'utente può o meno visualizzarlo
 implementare template per messaggio "contenuto riservato"
 implementare possibilità di customizzare "messaggio di contenuto riservato"

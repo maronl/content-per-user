@@ -4,7 +4,7 @@ jQuery(function() {
     console.log('load admin js');
 
     jQuery( "#suggest-content-per-user" ).autocomplete({
-        source: ajaxurl + '?action=suggest_content_per_user',
+        source: ajaxurl + '?action=suggest_content_per_user&user_id=' + content_per_user.a_value,
         minLength: 2,
         select: function( event, ui ) {
             jQuery('#content-per-user-post-id').val(ui.item.id);

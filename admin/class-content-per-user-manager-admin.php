@@ -57,13 +57,26 @@ class Content_Per_User_Manager_Admin {
 
     }
 
-    public function register_scripts() {
+    public function register_scripts($hook) {
         wp_register_script( 'content-per-user-admin-js', plugins_url( $this->js_configuration['js_path'] . 'content-per-user-admin.' . $this->js_configuration['js_extension'], __FILE__ ), array('jquery-ui-autocomplete') );
     }
 
     public function enqueue_scripts($hook) {
         if( $hook == 'user-edit.php' ){
-            wp_enqueue_script('content-per-user-admin-js');
+
+            if( isset( $_GET['user_id'] ) ){
+
+                // Localize the script with user data
+                $translation_array = array(
+                    'some_string' => __( 'Some string to translate', 'plugin-domain' ),
+                    'a_value' => '10'
+                );
+
+                wp_localize_script( 'content-per-user-admin-js', 'content_per_user', $translation_array );
+
+                wp_enqueue_script('content-per-user-admin-js');
+
+            }
         }
     }
 
@@ -151,17 +164,28 @@ class Content_Per_User_Manager_Admin {
     }
 
     function suggest_content_per_user() {
-        $res = array();
-        $res[] = array(
-            'id' => 123,
-            'value' => 'pinco pallino'
-        );
-        $res[] = array(
-            'id' => 145,
-            'value' => 'gian burrasca'
-        );
+
+        global $wpdb;
+
+        $user_id = $_GET['user_id'];
+
+        $term = $_GET['term'];
+
+        $query = "select wp_posts.ID as id, wp_posts.post_title as value
+          from wp_posts
+          inner join wp_postmeta on wp_posts.ID = wp_postmeta.post_id and wp_postmeta.meta_key = 'content-per-user' and wp_postmeta.meta_value = 1
+          left join wp_content_per_user on wp_content_per_user.post_id = wp_posts.ID and wp_content_per_user.user_id = %d
+          where wp_content_per_user.user_id is NULL
+          and wp_posts.post_title like '%%%s%%'";
+
+        $query = $wpdb->prepare($query, $user_id, $term);
+
+        $res = $wpdb->get_results($query);
+
         echo json_encode($res);
+
         die;
+
     }
 
     function load_textdomain() {
