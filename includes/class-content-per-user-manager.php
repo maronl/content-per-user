@@ -133,7 +133,8 @@ class Content_Per_User_Manager {
         $this->loader->add_action( 'save_post', $admin, 'save_meta_box_content_per_user' );
         $this->loader->add_action( 'edit_user_profile', $admin, 'user_profile_content_per_user_section' );
         $this->loader->add_action( 'wp_ajax_suggest_content_per_user', $admin, 'suggest_content_per_user' );
-
+        $this->loader->add_action( 'wp_ajax_add_content_per_user', $admin, 'add_content_per_user' );
+        $this->loader->add_action( 'wp_ajax_remove_content_per_user', $admin, 'remove_content_per_user' );
 
     }
 

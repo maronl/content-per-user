@@ -4,6 +4,11 @@ WordPress plugin to allow adminstrators define if a post, page or custom post is
 
 ## done
 10/05/2015
+implemetare gestione dati reali per i contenuti di uno specifico utente (database schema, ajax return values)
+ - ricerca reale json con ajax dei post da suggerire
+ - salvataggio associazione user_id post_id quando faccio aggiungi
+ - rimozione associazione user_id post_id quando faccio rimuovi
+implementata lista reale dei contenuti di un utente nel prodiilo utente
 
 09/05/2015
 aggiungere sezione nel profilo utente per aggiungere i contenuti di un utente
@@ -19,10 +24,6 @@ possibile configurare su quali post_type applicare la protezione del contenuto
 aggiunto metabox content per user nella pagina di editing del post
 
 ## to be done
-implemetare gestione dati reali per i contenuti di uno specifico utente (database schema, ajax return values)
- - ricerca reale json con ajax dei post da suggerire
- - salvataggio associazione user_id post_id qando fccio aggiungi
- - rimozione associazione user_id post_id qando fccio aggiungi
 implementare check prima di renderizzare il contenuto di un post per vedere se l'utente può o meno visualizzarlo
 implementare template per messaggio "contenuto riservato"
 implementare possibilità di customizzare "messaggio di contenuto riservato"

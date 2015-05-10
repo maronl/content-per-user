@@ -68,8 +68,7 @@ class Content_Per_User_Manager_Admin {
 
                 // Localize the script with user data
                 $translation_array = array(
-                    'some_string' => __( 'Some string to translate', 'plugin-domain' ),
-                    'a_value' => '10'
+                    'user_id' => $_GET['user_id']
                 );
 
                 wp_localize_script( 'content-per-user-admin-js', 'content_per_user', $translation_array );
@@ -135,6 +134,10 @@ class Content_Per_User_Manager_Admin {
 
     function user_profile_content_per_user_section(){
 
+        $user_id = $_GET['user_id'];
+
+        $current_content_per_user = $this->data_model->get_content_per_user( $user_id );
+
         ?>
 
         <h3><?php _e( 'Content per User', 'content-per-user' )?></h3>
@@ -155,8 +158,11 @@ class Content_Per_User_Manager_Admin {
         </table>
 
         <div class="tagchecklist contentperuserchecklist">
-            <span><a class="content-per-user-delbutton" id="post_tag-check-num-0">X</a>&nbsp;prova</span>
-            <span><a class="content-per-user-delbutton" id="post_tag-check-num-1">X</a>&nbsp;pippo</span>
+            <?php foreach( $current_content_per_user as $content){
+                $format = '<span><a class="content-per-user-delbutton" id="content-per-user-check-num-%d">X</a>&nbsp;%s</span>';
+                printf( $format, $content->id, $content->value);
+            }
+            ?>
         </div>
 
 
@@ -171,16 +177,62 @@ class Content_Per_User_Manager_Admin {
 
         $term = $_GET['term'];
 
-        $query = "select wp_posts.ID as id, wp_posts.post_title as value
-          from wp_posts
-          inner join wp_postmeta on wp_posts.ID = wp_postmeta.post_id and wp_postmeta.meta_key = 'content-per-user' and wp_postmeta.meta_value = 1
-          left join wp_content_per_user on wp_content_per_user.post_id = wp_posts.ID and wp_content_per_user.user_id = %d
-          where wp_content_per_user.user_id is NULL
-          and wp_posts.post_title like '%%%s%%'";
+        $res = $this->data_model->suggest_content_per_user( $user_id, $term );
 
-        $query = $wpdb->prepare($query, $user_id, $term);
+        echo json_encode($res);
 
-        $res = $wpdb->get_results($query);
+        die;
+
+    }
+
+    function add_content_per_user() {
+
+        global $wpdb;
+
+        $user_id = $_POST['user_id'];
+
+        $post_id = $_POST['post_id'];
+
+        $insert = $this->data_model->add_content_per_user( $user_id, $post_id );
+
+        if($insert){
+            $res = array(
+                'status' => 1
+            );
+        }else{
+            $res = array(
+                'status' => 0,
+                'msg' => __('Error saving the data. Please try again!')
+            );
+        }
+
+        echo json_encode($res);
+
+        die;
+
+    }
+
+    function remove_content_per_user() {
+
+        global $wpdb;
+
+        $post_id = $_POST['post_id'];
+
+        $user_id = $_POST['user_id'];
+
+        $delete = $this->data_model->remove_content_per_user( $user_id, $post_id );
+
+        if($delete){
+            $res = array(
+                'status' => 1,
+                'post_id' => $post_id
+            );
+        }else{
+            $res = array(
+                'status' => 0,
+                'msg' => __('Error deleting the data. Please try again!')
+            );
+        }
 
         echo json_encode($res);
 
