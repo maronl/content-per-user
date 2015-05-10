@@ -26,7 +26,7 @@ class Content_Per_User_Manager_Public {
 
     function the_content_filter( $content ) {
         if ( is_single() && ! $this->data_model->user_can_access_post( get_current_user_id(), get_the_ID() )){
-            $check_preview = strpos( $content, '<!--om-preview-->' );
+            $check_preview = strpos( $content, '<!--cpu-preview-->' );
             if( $check_preview === false ) {
                 $content = '';
             }else{
