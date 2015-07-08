@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: content per user\n"
-"POT-Creation-Date: 2015-05-08 23:58+0100\n"
-"PO-Revision-Date: 2015-05-08 23:58+0100\n"
+"POT-Creation-Date: 2015-07-08 22:16+0100\n"
+"PO-Revision-Date: 2015-07-08 22:20+0100\n"
 "Last-Translator: Luca Maroni <lcmaroni77@gmail.com>\n"
 "Language-Team: Luca Maroni <lcmaroni77@gmail.com>\n"
 "Language: it\n"
@@ -17,13 +17,48 @@ msgstr ""
 "X-Poedit-SearchPath-0: C:\\xampp\\htdocs\\wp-plugin-dev\\wordpress\\wp-"
 "content\\plugins\\content-per-user\n"
 
+#: C:\xampp\htdocs\wp-plugin-dev\wordpress\wp-content\plugins\content-per-user/admin/class-content-per-user-manager-admin.php:90
+#: C:\xampp\htdocs\wp-plugin-dev\wordpress\wp-content\plugins\content-per-user/admin/class-content-per-user-manager-admin.php:143
+msgid "Content per User"
+msgstr "Content per User"
+
+#: C:\xampp\htdocs\wp-plugin-dev\wordpress\wp-content\plugins\content-per-user/admin/class-content-per-user-manager-admin.php:106
+msgid "disabled"
+msgstr "Disabilitato"
+
+#: C:\xampp\htdocs\wp-plugin-dev\wordpress\wp-content\plugins\content-per-user/admin/class-content-per-user-manager-admin.php:107
+msgid "enable"
+msgstr "Abilitato"
+
+#: C:\xampp\htdocs\wp-plugin-dev\wordpress\wp-content\plugins\content-per-user/admin/class-content-per-user-manager-admin.php:110
+msgid "Select \"enable\" to restrict the access only to specific users"
+msgstr ""
+"Abilita la funzionalità content per user per limitare l'accesso solo ad "
+"alcuni utenti"
+
+#: C:\xampp\htdocs\wp-plugin-dev\wordpress\wp-content\plugins\content-per-user/admin/class-content-per-user-manager-admin.php:152
+msgid "Select content using title or page slug"
+msgstr "Seleziona il contenuto usando il titolo o lo slug della pagina"
+
+#: C:\xampp\htdocs\wp-plugin-dev\wordpress\wp-content\plugins\content-per-user/admin/class-content-per-user-manager-admin.php:154
+msgid "Add Content"
+msgstr "Aggiungi"
+
+#: C:\xampp\htdocs\wp-plugin-dev\wordpress\wp-content\plugins\content-per-user/admin/class-content-per-user-manager-admin.php:205
+msgid "Error saving the data. Please try again!"
+msgstr "Errore salvando i dati. Si prega di riprovare..."
+
+#: C:\xampp\htdocs\wp-plugin-dev\wordpress\wp-content\plugins\content-per-user/admin/class-content-per-user-manager-admin.php:233
+msgid "Error deleting the data. Please try again!"
+msgstr "Errore salvando i dati. Si prega di riprovare..."
+
 #: C:\xampp\htdocs\wp-plugin-dev\wordpress\wp-content\plugins\content-per-user/admin/class-content-per-user-manager-options.php:36
-msgid "Tabsheet CMS Options"
-msgstr "Opzioni Tabsheet CMS"
+msgid "Content per User Options"
+msgstr "Opzioni Content per User"
 
 #: C:\xampp\htdocs\wp-plugin-dev\wordpress\wp-content\plugins\content-per-user/admin/class-content-per-user-manager-options.php:47
-msgid "WP Tabsheet CMS options"
-msgstr "Opzioni WP Tabsheet CMS"
+msgid "Content per User options"
+msgstr "Opzioni Content per User"
 
 #: C:\xampp\htdocs\wp-plugin-dev\wordpress\wp-content\plugins\content-per-user/admin/class-content-per-user-manager-options.php:68
 msgid "General settings"
@@ -32,6 +67,20 @@ msgstr "Impostazioni Generali"
 #: C:\xampp\htdocs\wp-plugin-dev\wordpress\wp-content\plugins\content-per-user/admin/class-content-per-user-manager-options.php:75
 msgid "Post type"
 msgstr "Post type"
+
+#: C:\xampp\htdocs\wp-plugin-dev\wordpress\wp-content\plugins\content-per-user/public/partials/access-forbidden.php:2
+msgid "Restricted Access"
+msgstr "Accesso Riservato"
+
+#: C:\xampp\htdocs\wp-plugin-dev\wordpress\wp-content\plugins\content-per-user/public/partials/access-forbidden.php:3
+msgid "To see the full article contact the administrator of the website"
+msgstr "Per visualizzare tutto il contenuto contatta l'amminstratore del sito"
+
+#~ msgid "Tabsheet CMS Options"
+#~ msgstr "Opzioni Tabsheet CMS"
+
+#~ msgid "WP Tabsheet CMS options"
+#~ msgstr "Opzioni WP Tabsheet CMS"
 
 #~ msgid "Tab list"
 #~ msgstr "Lista di Tab"

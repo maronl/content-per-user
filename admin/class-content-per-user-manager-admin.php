@@ -44,6 +44,10 @@ class Content_Per_User_Manager_Admin {
           id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
           post_id bigint(20) unsigned NOT NULL,
           user_id bigint(20) unsigned NOT NULL,
+          manager_id bigint(20) unsigned NULL,
+          status SMALLINT NOT NULL DEFAULT 0,
+          created TIMESTAMP,
+          modified TIMESTAMP,
           PRIMARY KEY (id),
           KEY cpu_post_id (post_id),
           KEY cpu_user_id (user_id)
@@ -58,7 +62,8 @@ class Content_Per_User_Manager_Admin {
     }
 
     public function register_scripts($hook) {
-        wp_register_script( 'content-per-user-admin-js', plugins_url( $this->js_configuration['js_path'] . 'content-per-user-admin.' . $this->js_configuration['js_extension'], __FILE__ ), array('jquery-ui-autocomplete') );
+        wp_register_script( 'content-per-user-profile-admin-js', plugins_url( $this->js_configuration['js_path'] . 'content-per-user-profile-admin.' . $this->js_configuration['js_extension'], __FILE__ ), array('jquery-ui-autocomplete') );
+        wp_register_script( 'content-per-user-requests-admin-js', plugins_url( $this->js_configuration['js_path'] . 'content-per-user-requests-admin.' . $this->js_configuration['js_extension'], __FILE__ ), array('jquery-ui-autocomplete') );
     }
 
     public function enqueue_scripts($hook) {
@@ -71,10 +76,55 @@ class Content_Per_User_Manager_Admin {
                     'user_id' => $_GET['user_id']
                 );
 
-                wp_localize_script( 'content-per-user-admin-js', 'content_per_user', $translation_array );
+                wp_localize_script( 'content-per-user-profile-admin-js', 'content_per_user', $translation_array );
 
-                wp_enqueue_script('content-per-user-admin-js');
+                wp_enqueue_script( 'content-per-user-profile-admin-js' );
 
+            }
+        }
+
+        if( $hook == 'toplevel_page_content-per-user/content-per-user-admin' ){
+
+            wp_enqueue_script( 'content-per-user-requests-admin-js' );
+
+        }
+    }
+
+    function create_admin_menu() {
+        add_menu_page( __('Content Request', 'content_per_user'), __('Content Request', 'content_per_user'), 'manage_content_per_user', 'content-per-user/content-per-user-admin.php', array($this, 'render_admin_page'), 'dashicons-megaphone', 26 );
+    }
+
+    function render_admin_page() {
+
+        if( isset( $_GET['req'] ) ){
+
+            $req_info = $this->data_model->get_request_per_content( $_GET['req'] );
+
+            include dirname(__FILE__) . '/partials/single-request.php';
+
+        }else{
+
+            $latest_requests = $this->data_model->get_requests_per_content();
+
+            include dirname(__FILE__) . '/partials/admin-page.php';
+
+        }
+
+
+    }
+
+    function add_content_request_menu_bubble() {
+        global $wpdb;
+        $pend_count = $this->data_model->count_pending_requests();
+        if( ! $pend_count ){
+            return;
+        }
+
+        global $menu;
+        foreach ( $menu as $key => $value ) {
+            if ( $menu[$key][2] == 'content-per-user/content-per-user-admin.php' ) {
+                $menu[$key][0] .= " <span class='update-plugins count-$pend_count'><span class='plugin-count count-req-content'>" . $pend_count . '</span></span>';
+                return;
             }
         }
     }
@@ -171,8 +221,6 @@ class Content_Per_User_Manager_Admin {
 
     function suggest_content_per_user() {
 
-        global $wpdb;
-
         $user_id = $_GET['user_id'];
 
         $term = $_GET['term'];
@@ -185,9 +233,90 @@ class Content_Per_User_Manager_Admin {
 
     }
 
-    function add_content_per_user() {
+    function add_request_per_content() {
 
-        global $wpdb;
+        $user_id = get_current_user_id();
+
+        $post_id = $_POST['post_id'];
+
+        $insert = $this->data_model->add_request_per_content( $user_id, $post_id );
+
+        if($insert){
+            $res = array(
+                'status' => 1,
+                'msg' => __('The request has been sent successfully!', 'content-per-user')
+            );
+        }else{
+            $res = array(
+                'status' => 0,
+                'msg' => __('Error saving the data. Please try again!', 'content-per-user')
+            );
+        }
+
+        echo json_encode($res);
+
+        die;
+
+    }
+
+    function accept_request_per_content() {
+
+        $req_id = $_POST['req_id'];
+
+        $accept = $this->data_model->accept_request_per_content( $req_id );
+
+        if($accept){
+            $res = array(
+                'status' => 1,
+                'msg' => __('The request has been accepted!!', 'content-per-user'),
+                'id' => $req_id,
+                'new_status' => __('Accepted', 'content-per-user'),
+                'count_pending' => $this->data_model->count_pending_requests()
+            );
+            $this->send_accepted_request_notificaiton( $req_id );
+        }else{
+            $res = array(
+                'status' => 0,
+                'msg' => __('Error saving the data. Please try again!', 'content-per-user'),
+                'id' => $req_id
+            );
+        }
+
+        echo json_encode($res);
+
+        die;
+
+    }
+
+    function refuse_request_per_content() {
+
+        $req_id = $_POST['req_id'];
+
+        $refuse = $this->data_model->refuse_request_per_content( $req_id );
+
+        if($refuse){
+            $res = array(
+                'status' => 1,
+                'msg' => __('The request has been refused!!', 'content-per-user'),
+                'id' => $req_id,
+                'new_status' => __('Refused', 'content-per-user'),
+                'count_pending' => $this->data_model->count_pending_requests()
+            );
+        }else{
+            $res = array(
+                'status' => 0,
+                'msg' => __('Error saving the data. Please try again!', 'content-per-user'),
+                'id' => $req_id
+            );
+        }
+
+        echo json_encode($res);
+
+        die;
+
+    }
+
+    function add_content_per_user() {
 
         $user_id = $_POST['user_id'];
 
@@ -199,10 +328,11 @@ class Content_Per_User_Manager_Admin {
             $res = array(
                 'status' => 1
             );
+            $this->send_user_notification( $user_id, $post_id );
         }else{
             $res = array(
                 'status' => 0,
-                'msg' => __('Error saving the data. Please try again!')
+                'msg' => __('Error saving the data. Please try again!', 'content-per-user')
             );
         }
 
@@ -213,8 +343,6 @@ class Content_Per_User_Manager_Admin {
     }
 
     function remove_content_per_user() {
-
-        global $wpdb;
 
         $post_id = $_POST['post_id'];
 
@@ -230,7 +358,7 @@ class Content_Per_User_Manager_Admin {
         }else{
             $res = array(
                 'status' => 0,
-                'msg' => __('Error deleting the data. Please try again!')
+                'msg' => __('Error deleting the data. Please try again!', 'content-per-user')
             );
         }
 
@@ -240,8 +368,70 @@ class Content_Per_User_Manager_Admin {
 
     }
 
+    function create_roles() {
+
+        $new_role = add_role(
+            'content_per_user_mamanger',
+            __('Content x User Manager', 'content-per-user'),
+            array( 'read' => true )
+        );
+
+        $new_role->add_cap('manage_content_per_user');
+
+    }
+
+    function deactivate_plugin() {
+
+        remove_role('content_per_user_mamanger');
+
+    }
+
+
+
     function load_textdomain() {
+
         load_plugin_textdomain( 'content-per-user', false, dirname( dirname( plugin_basename( __FILE__ ) ) )  . '/langs' );
+
+    }
+
+    private function send_accepted_request_notificaiton( $req_id ) {
+
+        $req_info = $this->data_model->get_request_per_content( $req_id );
+
+        $this->send_user_notification( $req_info->user_id, $req_info->post_id );
+
+    }
+
+    private function send_user_notification( $user_id, $post_id ) {
+
+        $user = get_userdata( $user_id );
+
+        $first_name = get_user_meta($user_id, 'first_name', true);
+
+        $last_name = get_user_meta($user_id, 'last_name', true);
+
+        $full_name = $first_name . ' ' . $last_name;
+
+        $blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
+
+        $post = get_post( $post_id );
+
+        $permalink = get_permalink( $post_id );
+
+        $message = sprintf( __('Egr. %s,', 'content-per-user'), $full_name ) . "\r\n\r\n";
+
+        $message .= __("Il contenuto da lei richiesto è stato abilitato: ", 'content-per-user') . $post->post_title . "\r\n\r\n";
+
+        $message .= __('Clicchi sul link qui sotto per accedere:', 'content-per-user') . "\r\n";
+
+        $message .= $permalink . "\r\n\r\n";
+
+        $message .= __('Le ricordiamo che per accedere ai contenuti dovrà essere connesso con le proprie credenziali.', 'content-per-user') . "\r\n\r\n";
+
+        $message .= sprintf( __('Per qualsiasi problema, prego contattarci a %s.', 'content-per-user'), get_option('admin_email') ) . "\r\n\r\n";
+
+        wp_mail( $user->user_email, sprintf( __('[%s] Conferma accesso al contenuto richiesto', 'content-per-user' ), $blogname ), $message );
+
     }
 
 }

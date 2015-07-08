@@ -127,14 +127,23 @@ class Content_Per_User_Manager {
         $this->loader->add_action( 'admin_init', $admin_options, 'register_scripts' );
         $this->loader->add_action( 'admin_enqueue_scripts', $admin_options, 'enqueue_scripts' );
         $this->loader->add_action( 'admin_menu', $admin_options, 'add_plugin_options_page' );
+        $this->loader->add_action( 'admin_menu', $admin, 'create_admin_menu' );
         $this->loader->add_action( 'admin_init', $admin_options, 'options_page_init' );
         $this->loader->add_action( 'init', $admin, 'load_textdomain' );
         $this->loader->add_action( 'add_meta_boxes',$admin , 'add_meta_box_content_per_user' );
         $this->loader->add_action( 'save_post', $admin, 'save_meta_box_content_per_user' );
         $this->loader->add_action( 'edit_user_profile', $admin, 'user_profile_content_per_user_section' );
         $this->loader->add_action( 'wp_ajax_suggest_content_per_user', $admin, 'suggest_content_per_user' );
+        $this->loader->add_action( 'wp_ajax_add_request_per_content', $admin, 'add_request_per_content' );
+        $this->loader->add_action( 'wp_ajax_nopriv_add_request_per_content', $admin, 'add_request_per_content' );
+        $this->loader->add_action( 'wp_ajax_accept_request_per_content', $admin, 'accept_request_per_content' );
+        $this->loader->add_action( 'wp_ajax_nopriv_accept_request_per_content', $admin, 'accept_request_per_content' );
+        $this->loader->add_action( 'wp_ajax_refuse_request_per_content', $admin, 'refuse_request_per_content' );
+        $this->loader->add_action( 'wp_ajax_nopriv_refuse_request_per_content', $admin, 'refuse_request_per_content' );
         $this->loader->add_action( 'wp_ajax_add_content_per_user', $admin, 'add_content_per_user' );
         $this->loader->add_action( 'wp_ajax_remove_content_per_user', $admin, 'remove_content_per_user' );
+
+        $this->loader->add_action( 'admin_menu', $admin, 'add_content_request_menu_bubble' );
 
     }
 
@@ -150,6 +159,8 @@ class Content_Per_User_Manager {
         $public = new Content_Per_User_Manager_Public( $this->version, $this->options, $data_model);
 
         $this->loader->add_filter( 'the_content', $public, 'the_content_filter', 99 );
+        $this->loader->add_action( 'init', $public, 'register_scripts' );
+        $this->loader->add_action( 'wp_enqueue_scripts', $public, 'enqueue_scripts' );
 
         Content_Per_User_Theme_Functions::define_theme_functions();
 
@@ -159,7 +170,8 @@ class Content_Per_User_Manager {
         $data_model = Content_Per_User_Model::getInstance();
         $admin = new Content_Per_User_Manager_Admin( $this->version, $this->options, $data_model);
         register_activation_hook( dirname( dirname( __FILE__ ) ) . '\content-per-user.php' , array( $admin, 'install_db_structure' ) );
-
+        register_activation_hook( dirname( dirname( __FILE__ ) ) . '\content-per-user.php' , array( $admin, 'create_roles' ) );
+        register_deactivation_hook(dirname( dirname( __FILE__ ) ) . '\content-per-user.php' , array( $admin, 'deactivate_plugin' ) );
     }
 
     /**

@@ -15,13 +15,23 @@ class Content_Per_User_Manager_Public {
         $this->options = $options;
         $this->data_model = $data_model;
         $this->js_configuration = array();
-        if(WP_DEBUG == false) {
+        if(false && WP_DEBUG == false) { //TODO la prima condizione è per disabilitare la min version che ad oggi nn funziona
             $this->js_configuration['js_path'] = CONTENT_PER_USER_JS_PROD_PATH;
             $this->js_configuration['js_extension'] = $this->version . '.min.js';
         }else{
             $this->js_configuration['js_path'] = CONTENT_PER_USER_JS_PATH;
             $this->js_configuration['js_extension'] = 'js';
         }
+    }
+
+    public function register_scripts($hook) {
+        wp_register_script( 'content-per-user-public-js', plugins_url( $this->js_configuration['js_path'] . 'content-per-user-public.' . $this->js_configuration['js_extension'], __FILE__ ), array('jquery-ui-autocomplete') );
+    }
+
+    public function enqueue_scripts($hook) {
+
+        wp_enqueue_script( 'content-per-user-public-js' );
+
     }
 
     function the_content_filter( $content ) {
