@@ -227,9 +227,11 @@ class Content_Per_User_Model {
             $table,
             array(
                 'post_id' => $post_id,
-                'user_id' => $user_id
+                'user_id' => $user_id,
+                'status' => 1
             ),
             array(
+                '%d',
                 '%d',
                 '%d'
             )
