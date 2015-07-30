@@ -371,7 +371,7 @@ class Content_Per_User_Manager_Admin {
     function create_roles() {
 
         $new_role = add_role(
-            'content_per_user_mamanger',
+            'content_per_user_manager',
             __('Content x User Manager', 'content-per-user'),
             array( 'read' => true )
         );
@@ -382,7 +382,7 @@ class Content_Per_User_Manager_Admin {
 
     function deactivate_plugin() {
 
-        remove_role('content_per_user_mamanger');
+        remove_role('content_per_user_manager');
 
     }
 

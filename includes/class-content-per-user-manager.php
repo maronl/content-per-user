@@ -70,7 +70,7 @@ class Content_Per_User_Manager {
 
 
         $this->plugin_slug = 'content-per-user';
-        $this->version = '1.0.0';
+        $this->version = '1.0.1';
         $this->options = get_option( 'content-per-user-options' );
 
         $this->load_dependencies();
