@@ -104,7 +104,15 @@ class Content_Per_User_Manager_Admin {
 
         }else{
 
-            $latest_requests = $this->data_model->get_requests_per_content();
+            $current_user_territory_id = get_user_meta( get_current_user_id(), 'salesforce_territoryID', true);
+
+            $params = array();
+
+            if(! empty($current_user_territory_id)){
+                $params['territoryID'] = $current_user_territory_id;
+            }
+
+            $latest_requests = $this->data_model->get_requests_per_content($params);
 
             include dirname(__FILE__) . '/partials/admin-page.php';
 
@@ -115,7 +123,12 @@ class Content_Per_User_Manager_Admin {
 
     function add_content_request_menu_bubble() {
         global $wpdb;
-        $pend_count = $this->data_model->count_pending_requests();
+        $current_user_territory_id = get_user_meta( get_current_user_id(), 'salesforce_territoryID', true);
+        $params = array();
+        if(! empty($current_user_territory_id)){
+            $params['territoryID'] = $current_user_territory_id;
+        }
+        $pend_count = $this->data_model->count_pending_requests($params);
         if( ! $pend_count ){
             return;
         }
@@ -266,12 +279,18 @@ class Content_Per_User_Manager_Admin {
         $accept = $this->data_model->accept_request_per_content( $req_id );
 
         if($accept){
+            $current_user_territory_id = get_user_meta( get_current_user_id(), 'salesforce_territoryID', true);
+            $params = array();
+            if(! empty($current_user_territory_id)){
+                $params['territoryID'] = $current_user_territory_id;
+            }
+
             $res = array(
                 'status' => 1,
                 'msg' => __('The request has been accepted!!', 'content-per-user'),
                 'id' => $req_id,
                 'new_status' => __('Accepted', 'content-per-user'),
-                'count_pending' => $this->data_model->count_pending_requests()
+                'count_pending' => $this->data_model->count_pending_requests($params)
             );
             $this->send_accepted_request_notificaiton( $req_id );
         }else{

@@ -36,16 +36,16 @@ class Content_Per_User_Model {
                 'post_id' => $post_id,
                 'manager_id' => null,
                 'status' => 0,
-                'created' => time(),
-                'modified' => time()
+                'created' => date('Y-m-d G:i:s'),
+                'modified' => date('Y-m-d G:i:s')
             ),
             array(
                 '%d',
                 '%d',
                 '%d',
                 '%d',
-                '%d',
-                '%d'
+                '%s',
+                '%s'
             )
         );
 
@@ -140,12 +140,23 @@ class Content_Per_User_Model {
 
         $table = $wpdb->prefix . "content_per_user";
 
-        $query = $wpdb->prepare("SELECT c.*, u.user_email, fn.meta_value as first_name, ln.meta_value as last_name, p.post_title, p.post_name
- FROM " . $table . " as c
- LEFT JOIN " . $wpdb->users . " as u ON c.user_id= u.ID
- LEFT JOIN " . $wpdb->usermeta . " as fn ON c.user_id = fn.user_id and fn.meta_key = 'first_name'
- LEFT JOIN " . $wpdb->usermeta . " as ln ON c.user_id = ln.user_id and fn.meta_key = 'last_name'
- LEFT JOIN " . $wpdb->posts . " as p ON c.post_id = p.ID");
+        $query_params = array();
+
+        $query = "SELECT c.*, u.user_email, fn.meta_value as first_name, ln.meta_value as last_name, p.post_title, p.post_name
+             FROM " . $table . " as c
+             LEFT JOIN " . $wpdb->users . " as u ON c.user_id= u.ID
+             LEFT JOIN " . $wpdb->usermeta . " as fn ON c.user_id = fn.user_id and fn.meta_key = 'first_name'
+             LEFT JOIN " . $wpdb->usermeta . " as ln ON c.user_id = ln.user_id and ln.meta_key = 'last_name'
+             LEFT JOIN " . $wpdb->posts . " as p ON c.post_id = p.ID";
+
+        if(isset($params['territoryID']) && ! empty($params['territoryID']) ){
+            $query_params[] = $params['territoryID'];
+            $query .= "
+            LEFT JOIN " . $wpdb->usermeta . " as tid ON c.user_id = tid.user_id and tid.meta_key = 'salesforce_territoryID'
+            WHERE tid.meta_value = %s";
+        }
+
+        $query = $wpdb->prepare($query, $query_params);
 
         $res = $wpdb->get_results($query);
 
@@ -346,11 +357,26 @@ class Content_Per_User_Model {
 
         $table = $wpdb->base_prefix . "content_per_user";
 
-        $user_count = $wpdb->get_var( "
+        $query = "
           SELECT COUNT(*)
-          FROM " . $table . "
-          WHERE status = 0
-          " );
+          FROM " . $table . " as c
+          ";
+
+        if(isset($params['territoryID']) && ! empty($params['territoryID']) ){
+            $query_params[] = $params['territoryID'];
+            $query .= "
+            LEFT JOIN " . $wpdb->usermeta . " as tid ON c.user_id = tid.user_id and tid.meta_key = 'salesforce_territoryID'";
+        }
+
+        $query .= "
+        WHERE status = 0";
+        if(isset($params['territoryID']) && ! empty($params['territoryID']) ){
+            $query .= " AND tid.meta_value = %s";
+        }
+
+        $query = $wpdb->prepare($query, $query_params);
+
+        $user_count = $wpdb->get_var( $query );
 
         return $user_count;
     }
