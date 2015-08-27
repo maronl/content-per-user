@@ -77,7 +77,7 @@
             $req_avatar = get_avatar($req->user_id,50);
             $req_username = $req->first_name . ' ' . $req->last_name;
             if( empty( $req_username ) || $req_username == ' '   ) $req_username = $req->user_email;
-            $req_date = date('m/d/Y', $req->created);
+            $req_date = $req->created;
             $req_post_title = $req->post_title;
             $req_post_url = get_permalink($req->post_id);
             ?>
