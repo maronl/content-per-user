@@ -91,7 +91,8 @@ class Content_Per_User_Manager_Admin {
     }
 
     function create_admin_menu() {
-        add_menu_page( __('Content Request', 'content_per_user'), __('Content Request', 'content_per_user'), 'manage_content_per_user', 'content-per-user/content-per-user-admin.php', array($this, 'render_admin_page'), 'dashicons-megaphone', 26 );
+        //add_menu_page( __('Content Request', 'content_per_user'), __('Content Request', 'content_per_user'), 'manage_content_per_user', 'content-per-user/content-per-user-admin.php', array($this, 'render_admin_page'), 'dashicons-megaphone', 26 );
+        add_menu_page( __('Content Request', 'content_per_user'), __('Content Request', 'content_per_user'), 'manage_options', 'content-per-user/content-per-user-admin.php', array($this, 'render_admin_page'), 'dashicons-megaphone', 26 );
     }
 
     function render_admin_page() {
