@@ -446,11 +446,19 @@ class Content_Per_User_Manager_Admin {
 
         $message .= $permalink . "\r\n\r\n";
 
-        $message .= __('Le ricordiamo che per accedere ai contenuti dovrà essere connesso con le proprie credenziali.', 'content-per-user') . "\r\n\r\n";
+        $message .= __('Per accedere ai contenuti dovrà essere connesso con le proprie credenziali.', 'content-per-user') . "\r\n\r\n";
 
-        $message .= sprintf( __('Per qualsiasi problema, prego contattarci a %s.', 'content-per-user'), get_option('admin_email') ) . "\r\n\r\n";
+        $message .= __('Le ricordiamo, inoltre, che per qualsiasi problema la nostra redazione è a sua disposizione.', 'content-per-user') . "\r\n\r\n";
 
-        wp_mail( $user->user_email, sprintf( __('[%s] Conferma accesso al contenuto richiesto', 'content-per-user' ), $blogname ), $message );
+        $message .= __('Cordiali saluti', 'content-per-user') . "\r\n";
+
+        $message .= __('La redazione di Clouderma', 'content-per-user') . "\r\n";
+
+        $headers = array('Bcc: redazione@clouderma.com');
+
+        $headers[]  = 'Bcc: lcmaroni77@gmail.com';
+
+        wp_mail( $user->user_email, sprintf( __('[%s] Conferma accesso al contenuto richiesto', 'content-per-user' ), $blogname ), $message, $headers );
 
     }
 

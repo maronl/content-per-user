@@ -84,7 +84,7 @@
 
             <div id="req_<?php echo $req->id; ?>" class="cxu-item <?php echo $req_status_css[$req->status]?>">
                 <?php echo $req_avatar; ?>
-                <input type="button" class="button button-primary accept-request" value="Abiilita" data-req-id="<?php echo $req->id; ?>">
+                <input type="button" class="button button-primary accept-request" value="Abilita" data-req-id="<?php echo $req->id; ?>">
                 <input type="button" class="button refuse-request" value="Nega" data-req-id="<?php echo $req->id; ?>">
                 <p><span class="date"><?php echo $req_date; ?></span>
                     - <span class="username"><?php echo $req_username; ?></span>
