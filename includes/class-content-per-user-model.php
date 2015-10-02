@@ -147,7 +147,8 @@ class Content_Per_User_Model {
              LEFT JOIN " . $wpdb->users . " as u ON c.user_id= u.ID
              LEFT JOIN " . $wpdb->usermeta . " as fn ON c.user_id = fn.user_id and fn.meta_key = 'first_name'
              LEFT JOIN " . $wpdb->usermeta . " as ln ON c.user_id = ln.user_id and ln.meta_key = 'last_name'
-             LEFT JOIN " . $wpdb->posts . " as p ON c.post_id = p.ID";
+             LEFT JOIN " . $wpdb->posts . " as p ON c.post_id = p.ID
+             ORDER BY c.created DESC";
 
         if(isset($params['territoryID']) && ! empty($params['territoryID']) ){
             $query_params[] = $params['territoryID'];
